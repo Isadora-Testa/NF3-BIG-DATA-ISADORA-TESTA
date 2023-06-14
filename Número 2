@@ -1,0 +1,31 @@
+import pandas as pd
+
+url = 'https://raw.githubusercontent.com/Isadora-Testa/Trabalho-Final/main/cursos-prouni.csv?token=GHSAT0AAAAAACDT36X2KBCSEES6ZYWYR7DQZEKCINQ'
+df = pd.read_csv(url)
+
+df['mensalidade'] = df['mensalidade'].astype(float)
+
+grau = df.groupby('grau')
+
+cursos = df.loc[df['curso_busca'].isin(['Matemática', 'Medicina', 'Pedagogia'])].groupby('curso_busca')
+
+estados = df.groupby('uf_busca')['nota_integral_ampla'].mean()
+
+tec = df.loc[df['grau'] == 'Tecnológico'].groupby('curso_busca')
+
+df.drop(columns=['cidade_filtro'], inplace=True)
+
+medicina = df.loc[df['curso_busca'] == 'Medicina']
+media_med = medicina['mensalidade'].mean().round()
+print("Média das mensalidades do curso de Medicina:", media_med)
+
+integral = df.loc[df['turno'] == 'Integral']
+media_integral = integral['nota_integral_ampla'].mean().round()
+print("Média das notas de corte dos cursos de tempo integral:", media_integral)
+
+bach = df.loc[(df['grau'] == 'Bacharelado') & (df['turno'] == 'Integral')]
+desc_bach = bach['nota_integral_ampla'].describe().round()
+print("Estatísticas descritivas das Notas Integral Ampla dos cursos de Bacharelado:\n", desc_bach)
+
+grupo = df.groupby('grau')
+grupo['nota_integral_cotas'].mean().plot(kind='bar')
