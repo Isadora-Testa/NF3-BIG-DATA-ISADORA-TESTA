@@ -1,0 +1,19 @@
+import pandas as pd 
+
+df = pd.read_csv('world_alcohol.csv')
+
+bebidas = df.groupby('Beverage Types')
+
+regiao_ano = df.groupby(['WHO region', 'Year'])
+
+contagem_regiao = df['WHO region'].value_counts()
+contagem_pais = df['Country'].value_counts()
+soma_bebida = df.groupby('Beverage Types')['Display Value'].sum()
+
+estatisticas = df.groupby('Beverage Types')['Display Value'].describe()
+
+df.groupby('Beverage Types')['Display Value'].mean().plot(kind='bar')
+
+bebidas_1985 = df.loc[df['Year'] == 1985, 'Beverage Types']
+
+regioes_acima_4 = df['WHO region'].value_counts()[df['WHO region'].value_counts() > 4]
