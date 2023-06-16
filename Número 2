@@ -3,29 +3,43 @@ import pandas as pd
 url = 'https://raw.githubusercontent.com/Isadora-Testa/Trabalho-Final/main/cursos-prouni.csv?token=GHSAT0AAAAAACDT36X2KBCSEES6ZYWYR7DQZEKCINQ'
 df = pd.read_csv(url)
 
+#a)Efetuar a limpeza das colunas de notas: onde tiver NaN (Not a Number), substituir por 0,0
+df['nota_integral_ampla'].fillna(0.0, inplace=True)
+df['nota_integral_cotas'].fillna(0.0, inplace=True)
+df['nota_parcial_ampla'].fillna(0.0, inplace=True)
+df['nota_parcial_cotas'].fillna(0.0, inplace=True)
 df['mensalidade'] = df['mensalidade'].astype(float)
 
+# b)Agrupe os dados pelo grau (Bacharelado, Licenciatura, etc) 
 grau = df.groupby('grau')
 
+# c)Agrupa os dados pelos cursos de Matemática, Medicina e Pedagogia
 cursos = df.loc[df['curso_busca'].isin(['Matemática', 'Medicina', 'Pedagogia'])].groupby('curso_busca')
 
+# d)Agrupa os dados por Estado e obtém a média das notas de corte por Estado
 estados = df.groupby('uf_busca')['nota_integral_ampla'].mean()
 
+# e)Agrupa os dados pelos cursos Tecnológicos
 tec = df.loc[df['grau'] == 'Tecnológico'].groupby('curso_busca')
 
+# f)Elimina a coluna "cidade_filtro"
 df.drop(columns=['cidade_filtro'], inplace=True)
 
+# g)Calcula a média das mensalidades do curso de Medicina
 medicina = df.loc[df['curso_busca'] == 'Medicina']
 media_med = medicina['mensalidade'].mean().round()
 print("Média das mensalidades do curso de Medicina:", media_med)
 
+# h) Calcula a média das notas de corte dos cursos de tempo integral
 integral = df.loc[df['turno'] == 'Integral']
 media_integral = integral['nota_integral_ampla'].mean().round()
 print("Média das notas de corte dos cursos de tempo integral:", media_integral)
 
+# i) Obtem as estatísticas descritivas das Notas Integral Ampla dos cursos de Bacharelado
 bach = df.loc[(df['grau'] == 'Bacharelado') & (df['turno'] == 'Integral')]
 desc_bach = bach['nota_integral_ampla'].describe().round()
 print("Estatísticas descritivas das Notas Integral Ampla dos cursos de Bacharelado:\n", desc_bach)
 
+# j) Cria um gráfico comparativo entre o grau dos cursos e as notas de corte integrais de cotas
 grupo = df.groupby('grau')
 grupo['nota_integral_cotas'].mean().plot(kind='bar')
