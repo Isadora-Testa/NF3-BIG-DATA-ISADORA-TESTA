@@ -2,18 +2,31 @@ import pandas as pd
 
 df = pd.read_csv('world_alcohol.csv')
 
+#a)Agrupar os dados por tipo de bebida
 bebidas = df.groupby('Beverage Types')
 
+# b) Agrupar os dados por Região e por Ano
 regiao_ano = df.groupby(['WHO region', 'Year'])
 
+#c)Seção de Contagens
+# Ocorrencia de regiões
 contagem_regiao = df['WHO region'].value_counts()
+
+# Ocorrencia de Países
 contagem_pais = df['Country'].value_counts()
+
+# Soma da coluna de valores das bebidas
 soma_bebida = df.groupby('Beverage Types')['Display Value'].sum()
 
+# d)Realizar análises estatísticas da coluna dos valores
 estatisticas = df.groupby('Beverage Types')['Display Value'].describe()
 
+# Gráfico de comparação dos valores agrupados por tipo de bebida
 df.groupby('Beverage Types')['Display Value'].mean().plot(kind='bar')
 
+# e) Resultados de acordo com alguns critérios
+# i. Mostrar a coluna de bebidas do ano de 1985
 bebidas_1985 = df.loc[df['Year'] == 1985, 'Beverage Types']
 
+# ii. Mostrar a coluna de Região com valores acima de 4
 regioes_acima_4 = df['WHO region'].value_counts()[df['WHO region'].value_counts() > 4]
